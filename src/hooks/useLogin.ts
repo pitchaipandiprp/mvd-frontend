@@ -1,0 +1,158 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { authRoutes } from "@/services/api/auth.routes";
+import { useAuthDispatch } from "@/stores/auth/useAuth";
+import { setAuth } from "@/stores/auth/authSlice";
+
+export function useLogin(redirectTo: string | null = "/panel/dashboard") {
+    const router = useRouter();
+    const dispatch = useAuthDispatch();
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [sendingOtp, setSendingOtp] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
+    const [resendCountdown, setResendCountdown] = useState(0);
+
+    useEffect(() => {
+        if (resendCountdown <= 0) {
+            return;
+        }
+
+        const timer = setInterval(() => {
+            setResendCountdown((previous) => {
+                if (previous <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+
+                return previous - 1;
+            });
+        }, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [resendCountdown]);
+
+    async function handleSuccessfulLogin(result: any) {
+        if (!result.success) {
+            setError(result.message || "Login failed");
+            return false;
+        }
+
+
+        //set the auth data in the redux store
+        dispatch(setAuth(result.data));
+
+        window.dispatchEvent(new Event("auth-change"));
+
+        if (redirectTo) {
+            router.replace(redirectTo);
+        }
+        return true;
+    }
+
+    async function loginWithEmail(email: string, password: string, role: string) {
+        if (!email) {
+            setError("Email is required");
+            return false;
+        }
+
+        if (!password) {
+            setError("Password is required");
+            return false;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const result = await authRoutes.loginUser({ email, password, role });
+            return await handleSuccessfulLogin(result);
+        } catch (caughtError) {
+            console.error("Email login failed:", caughtError);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function loginWithOtp(mobile: string, otp: string, role: string) {
+        if (!mobile) {
+            setError("Mobile number is required");
+            return false;
+        }
+
+        if (!otp) {
+            setError("OTP is required");
+            return false;
+        }
+
+        if (otp.length !== 6) {
+            setError("OTP must be 6 digits");
+            return false;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const result = await authRoutes.otpLoginUser({ mobile, otp, role });
+            return await handleSuccessfulLogin(result);
+        } catch (caughtError) {
+            console.error("OTP login failed:", caughtError);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function sendOtp(mobile: string) {
+        if (!mobile) {
+            setError("Mobile number is required");
+            return false;
+        }
+
+        if (mobile.length !== 10) {
+            setError("Mobile number must be 10 digits");
+            return false;
+        }
+
+        setSendingOtp(true);
+        setError("");
+
+        try {
+            const result = await authRoutes.sendOtp({ mobile });
+
+            if (!result.success) {
+                setError(result.message || "Failed to send OTP");
+                return false;
+            }
+
+            setOtpSent(true);
+            setResendCountdown(30);
+            return true;
+        } catch (caughtError) {
+            console.error("Send OTP failed:", caughtError);
+            return false;
+        } finally {
+            setSendingOtp(false);
+        }
+    }
+
+    return {
+        loginWithEmail,
+        loginWithOtp,
+        sendOtp,
+        loading,
+        sendingOtp,
+        error,
+        setError,
+        otpSent,
+        setOtpSent,
+        resendCountdown,
+    };
+}

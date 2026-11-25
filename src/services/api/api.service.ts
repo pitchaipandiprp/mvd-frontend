@@ -1,0 +1,291 @@
+"use client";
+
+import { apiConfig } from "@/environments/api";
+import { sweetalert } from "@/utils/sweetalert";
+import { setAuth, clearAuth } from "@/stores/auth/authSlice";
+import { store } from "@/stores/auth/authStore";
+
+type RequestOptions = RequestInit & {
+  headers?: Record<string, string>;
+};
+
+function getAuthData() {
+  const authData = store.getState().auth;
+
+  return {
+    accessToken: authData.accessToken,
+    refreshToken: authData.refreshToken,
+    user: authData.user,
+  };
+}
+
+function authUserId() {
+  const { user } = getAuthData();
+
+  return user?.id ? String(user.id) : null;
+}
+
+function getAccessToken() {
+  const { accessToken } = getAuthData();
+
+  return accessToken;
+}
+
+function getRefreshToken() {
+  const { refreshToken } = getAuthData();
+
+  return refreshToken;
+}
+
+function clearAuthData() {
+  store.dispatch(clearAuth());
+}
+
+function buildUrl(path: string): string {
+  const baseUrl = apiConfig.apiBaseUrl.replace(/\/+$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  return `${baseUrl}${normalizedPath}`;
+}
+
+function withDefaultBody(body: any) {
+  const userId = authUserId();
+  return userId ? { ...body, user_id: userId } : body;
+}
+
+const requestWithBody = async <T>(
+  method: "POST" | "PUT" | "PATCH" | "DELETE",
+  path: string,
+  body: unknown,
+  options: RequestOptions = {},
+): Promise<T> => {
+
+  const makeRequest = async (token: string | null) => {
+
+    const isFormData = body instanceof FormData;
+
+    const userId = authUserId();
+
+    if (isFormData && userId) {
+      body.append("user_id", userId);
+    }
+
+    const headers = new Headers();
+
+    headers.set("Accept", "application/json");
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    if (!isFormData) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    if (options.headers) {
+      const customHeaders = new Headers(
+        options.headers
+      );
+
+      customHeaders.forEach((value, key) => {
+        headers.set(key, value);
+      });
+    }
+
+    return fetch(
+      buildUrl(path),
+      {
+        ...options,
+        method,
+        headers,
+        body: isFormData ? body as FormData : JSON.stringify(withDefaultBody(body)),
+      }
+    );
+  };
+
+  let accessToken = getAccessToken();
+
+  let response = await makeRequest(accessToken);
+
+  // Access token expired
+  if (response.status === 401) {
+
+    const newAccessToken = await refreshAccessToken();
+
+    if (!newAccessToken) {
+      clearAuthData();
+      // window.location.href = "/customer-login";
+      window.location.href = "/";
+      throw new Error("Session expired. Please login again.");
+    }
+
+    // Retry original request
+    response = await makeRequest(newAccessToken);
+  }
+
+  return handleResponse<T>(response);
+};
+
+
+const get = async <T>(path: string, options: RequestOptions = {}): Promise<T> => {
+  const accessToken = getAccessToken();
+  const userId = authUserId();
+
+  const url = new URL(
+    buildUrl(path),
+    window.location.origin
+  );
+
+  if (userId) {
+    url.searchParams.set(
+      "user_id",
+      String(userId)
+    );
+  }
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(options.headers ?? {}),
+    },
+    ...options,
+  });
+
+  return handleResponse<T>(response);
+};
+
+const post = async <T>(path: string, body: unknown, options: RequestOptions = {}): Promise<T> => {
+  return requestWithBody<T>("POST", path, body, options);
+};
+
+const put = async <T>(path: string, body: unknown, options: RequestOptions = {}): Promise<T> => {
+  return requestWithBody<T>("PUT", path, body, options);
+};
+
+const patch = async <T>(path: string, body: unknown, options: RequestOptions = {}): Promise<T> => {
+  return requestWithBody<T>("PATCH", path, body, options);
+};
+
+const remove = async <T>(path: string, body: unknown, options: RequestOptions = {}): Promise<T> => {
+  return requestWithBody<T>("DELETE", path, body, options);
+};
+
+
+async function handleResponse<T>(response: Response): Promise<T> {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  const payload = contentType.includes("application/json")
+    ? ((await response.json()) as T)
+    : ((await response.text()) as unknown as T);
+
+  if (response.status === 400 || response.status === 422) {
+    let title = "Error";
+    let message = "Request failed";
+
+    if (typeof payload === 'object' && payload !== null) {
+      const errorPayload = payload as {
+        message?: string;
+        errors?: Array<{
+          msg?: string;
+        }>
+      }
+
+      if (errorPayload.message) {
+        message = errorPayload.message;
+      }
+
+      if (Array.isArray(errorPayload.errors) && errorPayload.errors.length > 0) {
+        title = message;
+        message = errorPayload.errors[0]?.msg ?? "Error";
+      }
+    }
+
+    await sweetalert.toastError(message);
+    // throw new Error(message);
+  }
+
+  return payload;
+}
+
+
+let isTokenRefreshing = false;
+let refreshTokenPromise: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+
+  const refreshToken = getRefreshToken();
+
+  if (!refreshToken) {
+    return null;
+  }
+
+  if (isTokenRefreshing && refreshTokenPromise) {
+    return refreshTokenPromise;
+  }
+
+  isTokenRefreshing = true;
+
+  refreshTokenPromise = (async () => {
+    try {
+      const response = await fetch(
+        buildUrl("/auth/refresh-token"),
+        {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken: refreshToken,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        clearAuthData();
+        return null;
+      }
+
+      const responseJson = await response.json();
+
+      const newAccessToken = responseJson?.data?.accessToken ?? null;
+
+      if (!newAccessToken) {
+        clearAuthData();
+        return null;
+      }
+
+      //Set Auth data in the redux store
+      const currentAuth = store.getState().auth;
+      store.dispatch(
+        setAuth({
+          accessToken: newAccessToken,
+          refreshToken: currentAuth?.refreshToken,
+          user: currentAuth?.user,
+        })
+      );
+
+      return newAccessToken;
+    } catch (error) {
+      console.error("Refresh token error:", error);
+      clearAuthData();
+      return null;
+    } finally {
+      isTokenRefreshing = false;
+      refreshTokenPromise = null;
+    }
+  })();
+
+  return refreshTokenPromise;
+}
+
+
+export const apiService = {
+  get,
+  post,
+  put,
+  patch,
+  delete: remove,
+};
