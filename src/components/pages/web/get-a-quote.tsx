@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, MoveRight, RibbonIcon } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
+import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
 
 export const metadata: Metadata = {
   title: {
@@ -25,6 +26,7 @@ interface FormFields {
   quantity: string;
   trade_term: string;
   message: string;
+  captcha: string;
 }
 
 const initialForm: FormFields = {
@@ -37,6 +39,7 @@ const initialForm: FormFields = {
   quantity: "",
   trade_term: "FOB Tuticorin / Chennai",
   message: "",
+  captcha: "",
 };
 
 export default function GetAQuotePage() {
@@ -45,6 +48,7 @@ export default function GetAQuotePage() {
   const [form, setForm] = useState<FormFields>(initialForm);
   const [error, setError] = useState<Partial<Record<keyof FormFields, string>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const { canvasRef, refreshCaptcha, verifyCaptcha } = useTextCaptcha();
 
   const nameRegex = /^[a-zA-Z0-9 ]*$/;
   const charRegex = /^[a-zA-Z ]*$/;
@@ -142,12 +146,25 @@ export default function GetAQuotePage() {
       return;
     }
 
+    if (!form.captcha.trim()) {
+      setError({ captcha: "Please enter the captcha code" });
+      return;
+    }
+
+    if (!verifyCaptcha(form.captcha)) {
+      setForm((prev) => ({ ...prev, captcha: "" }));
+      setError({ captcha: "Invalid captcha code. Please try again." });
+      refreshCaptcha();
+      return;
+    }
+
     setSubmitted(true);
 
     try {
       // API integration here
       sweetalert.success(`Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly`);
       setForm(initialForm);
+      refreshCaptcha();
     } catch (error) {
       console.error("Quotation submission failed:", error);
     } finally {
@@ -382,6 +399,20 @@ export default function GetAQuotePage() {
                     <p className="text-xs text-red-500 mt-1">{error.message}</p>
                   )}
                 </div>
+
+                <TextCaptcha
+                  id="quote-captcha"
+                  name="captcha"
+                  canvasRef={canvasRef}
+                  value={form.captcha}
+                  onChange={(value) => updateField("captcha", value)}
+                  onRefresh={() => {
+                    updateField("captcha", "");
+                    refreshCaptcha();
+                  }}
+                  error={error.captcha}
+                  inputBorderClass={inputBorderClass("captcha")}
+                />
 
                 {/* {Object.values(error).some(Boolean) && (
                   <div className="md:col-span-12 text-sm text-rose-600">

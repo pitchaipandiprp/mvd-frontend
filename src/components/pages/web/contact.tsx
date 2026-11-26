@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
+import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
 
 export const metadata: Metadata = {
   title: {
@@ -19,6 +20,7 @@ interface FormFields {
   mobile_number: string;
   subject: string;
   message: string;
+  captcha: string;
 }
 
 const initialForm: FormFields = {
@@ -27,12 +29,14 @@ const initialForm: FormFields = {
   mobile_number: "",
   subject: "",
   message: "",
+  captcha: "",
 };
 
 export default function ContactPage() {
   const [form, setForm] = useState<FormFields>(initialForm);
   const [error, setError] = useState<Partial<Record<keyof FormFields, string>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const { canvasRef, refreshCaptcha, verifyCaptcha } = useTextCaptcha();
 
   const nameRegex = /^[a-zA-Z0-9 ]*$/;
   const mobileRegex = /^[0-9+\-\s]*$/;
@@ -94,6 +98,18 @@ export default function ContactPage() {
       return;
     }
 
+    if (!form.captcha.trim()) {
+      setError({ captcha: "Please enter the captcha code" });
+      return;
+    }
+
+    if (!verifyCaptcha(form.captcha)) {
+      setForm((prev) => ({ ...prev, captcha: "" }));
+      setError({ captcha: "Invalid captcha code. Please try again." });
+      refreshCaptcha();
+      return;
+    }
+
     setSubmitted(true);
 
     try {
@@ -102,6 +118,7 @@ export default function ContactPage() {
         "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
       );
       setForm(initialForm);
+      refreshCaptcha();
     } catch (err) {
       console.error("Contact submission failed:", err);
     } finally {
@@ -293,6 +310,20 @@ export default function ContactPage() {
                     <p className="text-xs text-red-500 mt-1">{error.message}</p>
                   )}
                 </div>
+
+                <TextCaptcha
+                  id="contact-captcha"
+                  name="captcha"
+                  canvasRef={canvasRef}
+                  value={form.captcha}
+                  onChange={(value) => updateField("captcha", value)}
+                  onRefresh={() => {
+                    updateField("captcha", "");
+                    refreshCaptcha();
+                  }}
+                  error={error.captcha}
+                  inputBorderClass={inputBorderClass("captcha")}
+                />
 
                 <button
                   type="submit"
