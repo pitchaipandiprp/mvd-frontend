@@ -7,8 +7,9 @@ import { useAuthSelector } from "@/stores/auth/useAuth";
 import AdminLeftMenu from "@/components/layout/panel/admin-left-menu";
 import PanelHeader from "@/components/layout/panel/panel-header";
 import PanelFooter from "@/components/layout/panel/panel-footer";
+import AuthProvider from "@/stores/auth/authProvider";
 
-export default function PanelLayout({
+function PanelLayoutContent({
     children,
 }: {
     children: React.ReactNode;
@@ -53,5 +54,17 @@ export default function PanelLayout({
                 <PanelFooter />
             </div>
         </div>
+    );
+}
+
+export default function PanelLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <AuthProvider>
+            <PanelLayoutContent>{children}</PanelLayoutContent>
+        </AuthProvider>
     );
 }
