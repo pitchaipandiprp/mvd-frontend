@@ -5,14 +5,14 @@ import BlogDetailsLayout, { RelatedGuide } from "./blog-details-layout";
 const RELATED_GUIDES: RelatedGuide[] = [
   {
     href: "/ramanathapuram-kundu-milagai-blog-details",
-    image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=200&q=80",
+    image: "/assets/img/rch1.jpg",
     alt: "Kundu Milagai",
     title: "Ramanathapuram Kundu Milagai Export Specs",
     date: "Oct 24, 2026",
   },
   {
     href: "/coconut-blog-details",
-    image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=200&q=80",
+    image: "/assets/img/co7.jpg",
     alt: "Red Onions",
     title: "Curing & Mesh-Bag Packaging for Red Onions",
     date: "Oct 12, 2026",
@@ -27,13 +27,13 @@ export default function BlogDetails() {
       badge="Coconut Exports"
       publishedText="Published November 10, 2026 • By MVD Export Quality Team"
       title="Quality Standards for Semi-Husked Coconut Exports to Middle East & Europe"
-      heroImage="https://images.unsplash.com/photo-1580984969071-a8da5656c2fb?auto=format&fit=crop&w=1200&q=85"
+      heroImage="/assets/img/co5.jpg"
       heroAlt="Export grade semi-husked coconuts"
       tags={["#SemiHuskedCoconut", "#AgroExportsIndia", "#TuticorinPort"]}
       relatedGuides={RELATED_GUIDES}
     >
       <p>
-        India ranks among the world’s top producers of mature coconuts, with Tamil Nadu leading international exports
+        India ranks among the world's top producers of mature coconuts, with Tamil Nadu leading international exports
         of <strong>semi-husked coconuts</strong>. For wholesale buyers across the UAE, Saudi Arabia, Qatar, the UK, and
         the Netherlands, selecting an exporter with rigorous post-harvest grading makes the difference between
         zero-wastage arrivals and costly spoilage.
@@ -84,7 +84,7 @@ export default function BlogDetails() {
         2. Eye-Protection &amp; Moisture Control
       </h2>
       <p>
-        During semi-husking at MVD Import and Exporter’s packhouse near Madurai, a protective tuft of coir fiber is
+        During semi-husking at MVD Import and Exporter's packhouse near Madurai, a protective tuft of coir fiber is
         intentionally retained over the three germination eyes. This cushions the soft eye against mechanical impact and
         prevents bacterial ingress. Every batch is air-cured before bagging to eliminate surface dampness.
       </p>

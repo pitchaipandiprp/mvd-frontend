@@ -5,7 +5,6 @@ import "@/assets/css/web.css";
 import WebHeader from "@/components/layout/web/web-header";
 import WebFooter from "@/components/layout/web/web-footer";
 import BackToTop from "@/components/layout/web/back-to-top";
-import { WebToastProvider } from "@/context/web-toast-context";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -34,19 +33,17 @@ export default function WebLayout({
   useScrollReveal();
 
   return (
-    <WebToastProvider>
-      <div
-        className={`web-root min-h-screen w-full bg-white selection:bg-[#facc15] selection:text-[#071e38] ${plusJakarta.variable} ${inter.variable} ${caveat.variable}`}
-      >
-        <div className="flex min-h-screen w-full flex-col overflow-x-hidden">
-          <WebHeader />
+    <div
+      className={`web-root min-h-screen w-full bg-white selection:bg-[#facc15] selection:text-[#071e38] ${plusJakarta.variable} ${inter.variable} ${caveat.variable}`}
+    >
+      <div className="flex min-h-screen w-full flex-col overflow-x-hidden">
+        <WebHeader />
 
-          <main className="flex-1 w-full">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
 
-          <WebFooter />
-          <BackToTop />
-        </div>
+        <WebFooter />
+        <BackToTop />
       </div>
-    </WebToastProvider>
+    </div>
   );
 }

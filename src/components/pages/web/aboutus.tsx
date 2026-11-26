@@ -45,11 +45,6 @@ export default function AboutUs() {
     <>
       {/* SUBPAGE BANNER */}
       <section className="relative bg-[#071e38] py-16 sm:py-20 overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1800&q=80"
-          alt="Lush agricultural fields in Tamil Nadu"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-        />
         <div className="subpage-hero-overlay absolute inset-0"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
           <div className="text-xs font-bold uppercase tracking-widest text-[#facc15] mb-2">Home / About Us</div>
@@ -71,8 +66,8 @@ export default function AboutUs() {
             <div className="lg:col-span-6 reveal-left">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
                 <img
-                  src="https://images.unsplash.com/photo-1580984969071-a8da5656c2fb?auto=format&fit=crop&w=1000&q=85"
-                  alt="Freshly harvested coconuts prepared for export"
+                  src="/assets/img/about-export-commitment.jpg"
+                  alt="Freshly harvested coconuts and chillies prepared for export"
                   className="w-full h-[380px] sm:h-[480px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
