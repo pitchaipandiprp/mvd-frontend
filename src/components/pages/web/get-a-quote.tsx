@@ -193,7 +193,6 @@ export default function GetAQuotePage() {
                     <input
                       type="text"
                       id="quote-name"
-                      required
                       placeholder="e.g. Ahmed Al-Mansoor"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("customer_name")}`}
                       value={form.customer_name}
@@ -215,7 +214,6 @@ export default function GetAQuotePage() {
                     <input
                       type="text"
                       id="quote-company"
-                      required
                       placeholder="e.g. Gulf Fresh Produce Trading LLC"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("company_name")}`}
                       value={form.company_name}
@@ -240,7 +238,6 @@ export default function GetAQuotePage() {
                     <input
                       type="email"
                       id="quote-email"
-                      required
                       placeholder="buyer@company.com"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("email_id")}`}
                       value={form.email_id}
@@ -257,7 +254,6 @@ export default function GetAQuotePage() {
                     <input
                       type="tel"
                       id="quote-phone"
-                      required
                       placeholder="+971 50 123 4567"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("mobile_number")}`}
                       value={form.mobile_number}
@@ -282,7 +278,6 @@ export default function GetAQuotePage() {
                     <input
                       type="text"
                       id="quote-country"
-                      required
                       placeholder="e.g. UAE (Jebel Ali Port)"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("country")}`}
                       value={form.country}
@@ -303,7 +298,6 @@ export default function GetAQuotePage() {
                     </label>
                     <select
                       id="quote-product"
-                      required
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm bg-white ${inputBorderClass("product")}`}
                       value={form.product}
                       onChange={(event) => {
@@ -333,7 +327,6 @@ export default function GetAQuotePage() {
                     <input
                       type="text"
                       id="quote-quantity"
-                      required
                       placeholder="e.g. 1 x 40ft HC Container (27 MT) or 500 Boxes"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("quantity")}`}
                       value={form.quantity}
@@ -378,7 +371,6 @@ export default function GetAQuotePage() {
                   <textarea
                     id="quote-message"
                     rows={4}
-                    required
                     placeholder="Specify preferred nut weight, bag size (25/30 nuts per bag), target delivery schedule, or custom labeling..."
                     className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("message")}`}
                     value={form.message}

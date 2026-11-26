@@ -1,63 +1,115 @@
 "use client";
+import type { Metadata } from "next";
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { sweetalert } from "@/utils/sweetalert";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useWebToast } from "@/context/web-toast-context";
+export const metadata: Metadata = {
+  title: {
+    default: "Contact Us | MVD Import and Exporter - Thiruppuvanam, Madurai",
+    template: "%s | MVD Import & Export",
+  },
+  description:
+    "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
+};
 
-interface ContactFormState {
-  name: string;
-  email: string;
-  phone: string;
+interface FormFields {
+  user_name: string;
+  email_id: string;
+  mobile_number: string;
   subject: string;
   message: string;
 }
 
-const INITIAL_FORM: ContactFormState = {
-  name: "",
-  email: "",
-  phone: "",
+const initialForm: FormFields = {
+  user_name: "",
+  email_id: "",
+  mobile_number: "",
   subject: "",
   message: "",
 };
 
 export default function ContactPage() {
-  const { showToast } = useWebToast();
-  const [formData, setFormData] = useState<ContactFormState>(INITIAL_FORM);
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [form, setForm] = useState<FormFields>(initialForm);
+  const [error, setError] = useState<Partial<Record<keyof FormFields, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    document.title = "Contact Us | MVD Import and Exporter - Thiruppuvanam, Madurai";
-  }, []);
+  const nameRegex = /^[a-zA-Z0-9 ]*$/;
+  const mobileRegex = /^[0-9+\-\s]*$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  const handleChange =
-    (field: keyof ContactFormState) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = e.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
-      if (errors[field] && value.trim()) {
-        setErrors((prev) => ({ ...prev, [field]: false }));
-      }
-    };
+  const updateField = (field: keyof FormFields, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, boolean> = {
-      name: !formData.name.trim(),
-      email: !formData.email.trim(),
-      subject: !formData.subject.trim(),
-      message: !formData.message.trim(),
-    };
-    setErrors(newErrors);
+    setError((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
 
-    if (Object.values(newErrors).some(Boolean)) {
-      showToast("Please fill in all required fields before sending.", true);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError({});
+
+    if (!form.user_name.trim()) {
+      setError({ user_name: "Please enter your name" });
+      return;
+    }
+
+    if (!nameRegex.test(form.user_name)) {
+      setError({ user_name: "Please enter a valid name" });
+      return;
+    }
+
+    if (!form.email_id.trim()) {
+      setError({ email_id: "Please enter the email address" });
+      return;
+    }
+
+    if (!emailRegex.test(form.email_id)) {
+      setError({ email_id: "Please enter a valid email address" });
+      return;
+    }
+
+    if (!form.mobile_number.trim()) {
+      setError({ mobile_number: "Please enter the mobile number" });
+      return;
+    }
+
+    if (!mobileRegex.test(form.mobile_number)) {
+      setError({ mobile_number: "Please enter a valid mobile number" });
+      return;
+    }
+
+    if (!form.subject.trim()) {
+      setError({ subject: "Please enter the subject" });
+      return;
+    }
+
+    if (!form.message.trim()) {
+      setError({ message: "Please enter your message" });
       return;
     }
 
     setSubmitted(true);
-    showToast("Message received! We will connect with you shortly.");
-    setFormData(INITIAL_FORM);
+
+    try {
+      // API integration here
+      sweetalert.success(
+        "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
+      );
+      setForm(initialForm);
+    } catch (err) {
+      console.error("Contact submission failed:", err);
+    } finally {
+      setSubmitted(false);
+    }
   };
+
+  const inputBorderClass = (field: keyof FormFields) => error[field] ? "border-red-500 ring-2 ring-red-200" : "border-slate-300";
 
   return (
     <div className="bg-[#f4f7fa]">
@@ -131,94 +183,128 @@ export default function ContactPage() {
 
           {/* Contact Form + Embedded Google Map */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Contact Form */}
-            <div className="lg:col-span-6 bg-white p-7 sm:p-9 rounded-2xl shadow-md border border-slate-100 reveal-left">
+            {/* Left Form Card */}
+            <div className="lg:col-span-6 bg-white rounded-2xl p-6 sm:p-10 shadow-md border border-slate-100 reveal-left">
               <h2 className="text-2xl font-extrabold text-[#0b2c52]">Send Us a Direct Message</h2>
               <p className="text-sm text-slate-500 mt-1">
-                Have questions about minimum order quantities, port schedules, or product samples? Write to us below.
+                Fields marked with <span className="text-red-500">*</span> are required. Have questions about minimum
+                order quantities, port schedules, or product samples? Write to us below.
               </p>
 
-              {submitted && (
-                <div
-                  id="contact-success-banner"
-                  className="mt-5 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm font-medium"
-                >
-                  ✓ Your message has been sent to MVD Import and Exporter. We will reply shortly!
-                </div>
-              )}
-
-              <form id="main-contact-form" className="mt-6 space-y-4" onSubmit={handleSubmit} noValidate>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form id="main-contact-form" className="mt-7 space-y-5" onSubmit={handleSubmit} autoComplete="off">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">Your Name *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Your Name <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleChange("name")}
+                      id="contact-user_name"
+                      name="user_name"
                       placeholder="Full Name"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${
-                        errors.name ? "border-red-500" : "border-slate-300"
-                      }`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("user_name")}`}
+                      value={form.user_name}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (nameRegex.test(value)) {
+                          updateField("user_name", value);
+                        }
+                      }}
                     />
+                    {error.user_name && (
+                      <p className="text-xs text-red-500 mt-1">{error.user_name}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">Email Address *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange("email")}
+                      id="contact-email_id"
+                      name="email_id"
                       placeholder="you@company.com"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${
-                        errors.email ? "border-red-500" : "border-slate-300"
-                      }`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("email_id")}`}
+                      value={form.email_id}
+                      onChange={(event) => updateField("email_id", event.target.value)}
                     />
+                    {error.email_id && (
+                      <p className="text-xs text-red-500 mt-1">{error.email_id}</p>
+                    )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">Phone / WhatsApp</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Phone / WhatsApp Number <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="tel"
-                      value={formData.phone}
-                      onChange={handleChange("phone")}
+                      id="contact-mobile_number"
+                      name="mobile_number"
                       placeholder="+91 98765 43210"
-                      className="form-input w-full px-4 py-3 rounded-xl border border-slate-300 text-sm"
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("mobile_number")}`}
+                      value={form.mobile_number}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (mobileRegex.test(value)) {
+                          updateField("mobile_number", value);
+                        }
+                      }}
                     />
+                    {error.mobile_number && (
+                      <p className="text-xs text-red-500 mt-1">{error.mobile_number}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">Subject *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Subject <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
-                      required
-                      value={formData.subject}
-                      onChange={handleChange("subject")}
+                      id="contact-subject"
+                      name="subject"
                       placeholder="Export Inquiry / Partnership"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${
-                        errors.subject ? "border-red-500" : "border-slate-300"
-                      }`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("subject")}`}
+                      value={form.subject}
+                      onChange={(event) => updateField("subject", event.target.value)}
                     />
+                    {error.subject && (
+                      <p className="text-xs text-red-500 mt-1">{error.subject}</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">Message *</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Message <span className="text-red-500">*</span>
+                  </label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={4}
-                    required
-                    value={formData.message}
-                    onChange={handleChange("message")}
                     placeholder="Write your message here..."
-                    className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${
-                      errors.message ? "border-red-500" : "border-slate-300"
-                    }`}
+                    className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("message")}`}
+                    value={form.message}
+                    onChange={(event) => updateField("message", event.target.value)}
                   ></textarea>
+                  {error.message && (
+                    <p className="text-xs text-red-500 mt-1">{error.message}</p>
+                  )}
                 </div>
 
-                <button type="submit" className="btn-gold px-7 py-3.5 rounded-xl text-sm font-extrabold shadow-sm">
-                  Send Message →
+                <button
+                  type="submit"
+                  disabled={submitted}
+                  className="btn-gold w-full sm:w-auto px-8 py-4 rounded-xl text-sm sm:text-base font-extrabold shadow-md flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <span>{submitted ? "Submitting..." : "Send Message"}</span>
+                  {!submitted && (
+                    <span className="mt-1">
+                      <ArrowRight height={18} />
+                    </span>
+                  )}
                 </button>
               </form>
             </div>
