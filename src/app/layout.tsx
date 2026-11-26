@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en" className={`h-full ${poppins.variable}`}>
       <body className="min-h-screen antialiased">
         <NextTopLoader
-          color="var(--color-primary)"
+          color="var(--gold-primary)"
           height={2}
           showSpinner={false}
         />

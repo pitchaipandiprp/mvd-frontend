@@ -18,6 +18,14 @@
   --color-text: #1F1F1F;
   --color-muted-text: #6B6B6B;
   --color-border: #E5E5E5;
+
+  --navy-dark: #071e38;
+  --navy-primary: #0b2c52;
+  --navy-light: #133e70;
+  --gold-primary: #facc15;
+  --gold-hover: #eab308;
+  --green-accent: #16a34a;
+  --bg-soft: #f4f7fa;
 }
 
 body {

@@ -1,107 +1,161 @@
 "use client";
-
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import type { Metadata } from "next";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useWebToast } from "@/context/web-toast-context";
+import { ArrowRight, MoveRight, RibbonIcon } from "lucide-react";
+import { sweetalert } from "@/utils/sweetalert";
 
-interface QuoteFormState {
-  name: string;
-  company: string;
-  email: string;
-  phone: string;
+export const metadata: Metadata = {
+  title: {
+    default: "Get a Quote | MVD Import and Exporter - Bulk Export Inquiry",
+    template: "%s | MVD Import & Export",
+  },
+  description:
+    "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
+};
+
+
+interface FormFields {
+  customer_name: string;
+  company_name: string;
+  email_id: string;
+  mobile_number: string;
   country: string;
   product: string;
   quantity: string;
-  incoterm: string;
+  trade_term: string;
   message: string;
 }
 
-const INITIAL_FORM: QuoteFormState = {
-  name: "",
-  company: "",
-  email: "",
-  phone: "",
+const initialForm: FormFields = {
+  customer_name: "",
+  company_name: "",
+  email_id: "",
+  mobile_number: "",
   country: "",
   product: "",
   quantity: "",
-  incoterm: "FOB Tuticorin / Chennai",
+  trade_term: "FOB Tuticorin / Chennai",
   message: "",
 };
 
 export default function GetAQuotePage() {
-  const { showToast } = useWebToast();
+
   const searchParams = useSearchParams();
-  const [formData, setFormData] = useState<QuoteFormState>(INITIAL_FORM);
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [form, setForm] = useState<FormFields>(initialForm);
+  const [error, setError] = useState<Partial<Record<keyof FormFields, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    document.title = "Get a Quote | MVD Import and Exporter - Bulk Export Inquiry";
-  }, []);
+  const nameRegex = /^[a-zA-Z0-9 ]*$/;
+  const charRegex = /^[a-zA-Z ]*$/;
+  const decimalRegex = /^\d*\.?\d{0,2}$/;
+  const mobileRegex = /^[0-9+\-\s]*$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   useEffect(() => {
     const productParam = searchParams.get("product");
     if (productParam) {
-      setFormData((prev) => ({ ...prev, product: productParam }));
+      updateField("product", productParam);
     }
   }, [searchParams]);
 
-  const handleChange =
-    (field: keyof QuoteFormState) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      const value = e.target.value;
-      setFormData((prev) => ({ ...prev, [field]: value }));
-      if (errors[field] && value.trim()) {
-        setErrors((prev) => ({ ...prev, [field]: false }));
-      }
-    };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const requiredFields: (keyof QuoteFormState)[] = [
-      "name",
-      "company",
-      "email",
-      "phone",
-      "country",
-      "product",
-      "quantity",
-      "message",
-    ];
-    const newErrors: Record<string, boolean> = {};
-    let isValid = true;
 
-    requiredFields.forEach((field) => {
-      if (!formData[field].trim()) {
-        newErrors[field] = true;
-        isValid = false;
-      } else {
-        newErrors[field] = false;
-      }
-    });
+  const updateField = (field: keyof FormFields, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email.trim() && !emailRegex.test(formData.email.trim())) {
-      newErrors.email = true;
-      setErrors(newErrors);
-      showToast("Please enter a valid business email address.", true);
+    setError((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError({});
+
+    if (!form.customer_name.trim()) {
+      setError({ customer_name: "Please enter the customer name" });
       return;
     }
 
-    setErrors(newErrors);
+    if (!nameRegex.test(form.customer_name)) {
+      setError({ customer_name: "Please enter a valid customer name" });
+      return;
+    }
 
-    if (!isValid) {
-      showToast("Please fill in all required export quotation fields.", true);
+    if (!form.company_name.trim()) {
+      setError({ company_name: "Please enter the company name" });
+      return;
+    }
+
+    if (!nameRegex.test(form.company_name)) {
+      setError({ company_name: "Please enter a valid company name" });
+      return;
+    }
+
+    if (!form.email_id.trim()) {
+      setError({ email_id: "Please enter the email address" });
+      return;
+    }
+
+    if (!emailRegex.test(form.email_id)) {
+      setError({ email_id: "Please enter a valid email address" });
+      return;
+    }
+
+    if (!form.mobile_number.trim()) {
+      setError({ mobile_number: "Please enter the mobile number" });
+      return;
+    }
+
+    if (!mobileRegex.test(form.mobile_number)) {
+      setError({ mobile_number: "Please enter a valid mobile number" });
+      return;
+    }
+
+    if (!form.country.trim()) {
+      setError({ country: "Please enter the destination country" });
+      return;
+    }
+
+    if (!charRegex.test(form.country)) {
+      setError({ country: "Please enter a valid country name" });
+      return;
+    }
+
+    if (!form.product.trim()) {
+      setError({ product: "Please select the product" });
+      return;
+    }
+
+    if (!form.quantity.trim()) {
+      setError({ quantity: "Please enter the quantity" });
+      return;
+    }
+
+    if (!form.message.trim()) {
+      setError({ message: "Please enter the packaging and specification requirements" });
       return;
     }
 
     setSubmitted(true);
-    showToast("Quotation request submitted! Our export team will respond within 24 hours.");
-    setFormData(INITIAL_FORM);
+
+    try {
+      // API integration here
+      sweetalert.success(`Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly`);
+      setForm(initialForm);
+    } catch (error) {
+      console.error("Quotation submission failed:", error);
+    } finally {
+      setSubmitted(false);
+    }
   };
 
-  const inputBorderClass = (field: string) =>
-    errors[field] ? "border-red-500 ring-2 ring-red-200" : "border-slate-300";
+  const inputBorderClass = (field: keyof FormFields) => error[field] ? "border-red-500 ring-2 ring-red-200" : "border-slate-300";
 
   return (
     <div className="bg-[#f4f7fa]">
@@ -129,17 +183,8 @@ export default function GetAQuotePage() {
                 Fields marked with <span className="text-red-500">*</span> are required for accurate freight calculation.
               </p>
 
-              {submitted && (
-                <div
-                  id="quote-success-banner"
-                  className="mt-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm font-medium"
-                >
-                  ✓ Thank you! Your export quotation request has been logged. Our export manager will email you a formal
-                  proforma quote shortly.
-                </div>
-              )}
 
-              <form id="quote-request-form" className="mt-7 space-y-5" onSubmit={handleSubmit} noValidate>
+              <form id="quote-request-form" className="mt-7 space-y-5" onSubmit={handleSubmit} autoComplete="off">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -149,11 +194,19 @@ export default function GetAQuotePage() {
                       type="text"
                       id="quote-name"
                       required
-                      value={formData.name}
-                      onChange={handleChange("name")}
                       placeholder="e.g. Ahmed Al-Mansoor"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("name")}`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("customer_name")}`}
+                      value={form.customer_name}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (nameRegex.test(value)) {
+                          updateField("customer_name", value);
+                        }
+                      }}
                     />
+                    {error.customer_name && (
+                      <p className="text-xs text-red-500 mt-1">{error.customer_name}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -163,11 +216,19 @@ export default function GetAQuotePage() {
                       type="text"
                       id="quote-company"
                       required
-                      value={formData.company}
-                      onChange={handleChange("company")}
                       placeholder="e.g. Gulf Fresh Produce Trading LLC"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("company")}`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("company_name")}`}
+                      value={form.company_name}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (nameRegex.test(value)) {
+                          updateField("company_name", value);
+                        }
+                      }}
                     />
+                    {error.company_name && (
+                      <p className="text-xs text-red-500 mt-1">{error.company_name}</p>
+                    )}
                   </div>
                 </div>
 
@@ -180,11 +241,14 @@ export default function GetAQuotePage() {
                       type="email"
                       id="quote-email"
                       required
-                      value={formData.email}
-                      onChange={handleChange("email")}
                       placeholder="buyer@company.com"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("email")}`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("email_id")}`}
+                      value={form.email_id}
+                      onChange={(event) => updateField("email_id", event.target.value)}
                     />
+                    {error.email_id && (
+                      <p className="text-xs text-red-500 mt-1">{error.email_id}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -194,11 +258,19 @@ export default function GetAQuotePage() {
                       type="tel"
                       id="quote-phone"
                       required
-                      value={formData.phone}
-                      onChange={handleChange("phone")}
                       placeholder="+971 50 123 4567"
-                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("phone")}`}
+                      className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("mobile_number")}`}
+                      value={form.mobile_number}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (mobileRegex.test(value)) {
+                          updateField("mobile_number", value);
+                        }
+                      }}
                     />
+                    {error.mobile_number && (
+                      <p className="text-xs text-red-500 mt-1">{error.mobile_number}</p>
+                    )}
                   </div>
                 </div>
 
@@ -211,11 +283,19 @@ export default function GetAQuotePage() {
                       type="text"
                       id="quote-country"
                       required
-                      value={formData.country}
-                      onChange={handleChange("country")}
                       placeholder="e.g. UAE (Jebel Ali Port)"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("country")}`}
+                      value={form.country}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (charRegex.test(value)) {
+                          updateField("country", value);
+                        }
+                      }}
                     />
+                    {error.country && (
+                      <p className="text-xs text-red-500 mt-1">{error.country}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -224,18 +304,24 @@ export default function GetAQuotePage() {
                     <select
                       id="quote-product"
                       required
-                      value={formData.product}
-                      onChange={handleChange("product")}
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm bg-white ${inputBorderClass("product")}`}
+                      value={form.product}
+                      onChange={(event) => {
+                        updateField("product", event.target.value);
+                      }}
                     >
                       <option value="">-- Select Product --</option>
                       <option value="Semi-Husked Coconut">Coconut (Semi-Husked / Fresh / Mature)</option>
-                      <option value="Kundu Milagai">Kundu Milagai (Ramanathapuram Round Chilli)</option>
-                      <option value="Fresh Vegetables">Fresh Vegetables (Onions, Drumstick, Okra, Green Chilli)</option>
-                      <option value="Whole Spices">Spices &amp; Masalas</option>
+                      <option value="Pollachi Coconut">Pollachi Coconut</option>
+                      <option value="Theni Coconut">Theni Coconut</option>
+                      <option value="Andhra Red Chilli">Andhra Red Chilli</option>
+                      <option value="Ramanathapuram Kundu Milagai">Kundu Milagai (Ramanathapuram Round Chilli)</option>
                       <option value="Coconut Products">Coconut Products (Copra, Coir, Desiccated)</option>
-                      <option value="Mixed Agro Container">Mixed Agro / Custom Import-Export Order</option>
                     </select>
+
+                    {error.product && (
+                      <p className="text-xs text-red-500 mt-1">{error.product}</p>
+                    )}
                   </div>
                 </div>
 
@@ -248,27 +334,40 @@ export default function GetAQuotePage() {
                       type="text"
                       id="quote-quantity"
                       required
-                      value={formData.quantity}
-                      onChange={handleChange("quantity")}
                       placeholder="e.g. 1 x 40ft HC Container (27 MT) or 500 Boxes"
                       className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("quantity")}`}
+                      value={form.quantity}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (decimalRegex.test(value)) {
+                          updateField("quantity", value);
+                        }
+                      }}
                     />
+                    {error.quantity && (
+                      <p className="text-xs text-red-500 mt-1">{error.quantity}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       Preferred Trade Term
                     </label>
                     <select
-                      id="quote-incoterm"
-                      value={formData.incoterm}
-                      onChange={handleChange("incoterm")}
+                      id="quote-trade_term"
                       className="form-input w-full px-4 py-3 rounded-xl border border-slate-300 text-sm bg-white"
+                      value={form.trade_term}
+                      onChange={(event) => {
+                        updateField("trade_term", event.target.value);
+                      }}
                     >
                       <option value="FOB Tuticorin / Chennai">FOB (Tuticorin / Chennai Port)</option>
                       <option value="CIF Destination Port">CIF (Cost, Insurance &amp; Freight)</option>
                       <option value="CFR">CFR (Cost &amp; Freight)</option>
                       <option value="Air Freight">Air Cargo (Perishable Vegetables)</option>
                     </select>
+                    {error.trade_term && (
+                      <p className="text-xs text-red-500 mt-1">{error.trade_term}</p>
+                    )}
                   </div>
                 </div>
 
@@ -280,19 +379,31 @@ export default function GetAQuotePage() {
                     id="quote-message"
                     rows={4}
                     required
-                    value={formData.message}
-                    onChange={handleChange("message")}
                     placeholder="Specify preferred nut weight, bag size (25/30 nuts per bag), target delivery schedule, or custom labeling..."
                     className={`form-input w-full px-4 py-3 rounded-xl border text-sm ${inputBorderClass("message")}`}
+                    value={form.message}
+                    onChange={(event) => {
+                      updateField("message", event.target.value);
+                    }}
                   ></textarea>
+                  {error.message && (
+                    <p className="text-xs text-red-500 mt-1">{error.message}</p>
+                  )}
                 </div>
+
+                {/* {Object.values(error).some(Boolean) && (
+                  <div className="md:col-span-12 text-sm text-rose-600">
+                    {Object.values(error).find(Boolean)}
+                  </div>
+                )} */}
 
                 <button
                   type="submit"
-                  className="btn-gold w-full sm:w-auto px-8 py-4 rounded-xl text-sm sm:text-base font-extrabold shadow-md flex items-center justify-center gap-2"
+                  disabled={submitted}
+                  className="btn-gold w-full sm:w-auto px-8 py-4 rounded-xl text-sm sm:text-base font-extrabold shadow-md flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <span>Submit Quotation Request</span>
-                  <span>→</span>
+                  <span>{submitted ? "Submitting..." : "Submit Quotation Request"}</span>
+                  {!submitted && <span className="mt-1"><ArrowRight height={18} /></span>}
                 </button>
               </form>
             </div>
@@ -351,7 +462,7 @@ export default function GetAQuotePage() {
                   </li>
                   <li className="flex justify-between py-1.5">
                     <span className="font-semibold">40ft Reefer (Fresh Vegetables)</span>
-                    <span className="font-bold text-[#0b2c52]">18–22 MT</span>
+                    <span className="font-bold text-[#0b2c52]">18-22 MT</span>
                   </li>
                 </ul>
               </div>
