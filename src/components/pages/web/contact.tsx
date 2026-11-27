@@ -218,13 +218,20 @@ export default function ContactPage() {
               <h2 className="text-base font-extrabold text-[#0b2c52]">Email &amp; Trade Registration</h2>
               <p className="text-sm mt-2">
                 <a
-                  href={companyInfo.emailHref}
-                  className="font-bold text-[#0b2c52] hover:text-amber-600 break-all"
+                  href={companyInfo.leadership[0]?.email}
+                  className="font-bold text-slate-700 hover:text-amber-600 break-all"
                 >
-                  {companyInfo.email}
+                  {companyInfo.leadership[0]?.email}
                 </a>
               </p>
-
+              <p className="text-sm mt-2">
+                <a
+                  href={companyInfo.leadership[1]?.email}
+                  className="font-bold text-slate-500 hover:text-amber-600 break-all"
+                >
+                  {companyInfo.leadership[1]?.email}
+                </a>
+              </p>
             </div>
           </div>
 
