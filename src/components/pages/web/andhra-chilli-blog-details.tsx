@@ -19,7 +19,7 @@ const RELATED_GUIDES: RelatedGuide[] = [
   },
   {
     href: "/ramanathapuram-kundu-milagai-blog-details",
-    image: "/assets/img/rch1.jpg",
+    image: "/assets/img/round-chilli-2.jpg",
     alt: "Kundu Milagai",
     title: "Ramanathapuram Kundu Milagai Export Specs",
     date: "Oct 24, 2026",

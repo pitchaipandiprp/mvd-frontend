@@ -1,19 +1,9 @@
 "use client";
-import type { Metadata } from "next";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
 import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
 import { companyInfo } from "@/utils/constants";
-
-export const metadata: Metadata = {
-  title: {
-    default: "Contact Us | MVD Import and Exporter - Thiruppuvanam, Madurai",
-    template: "%s | MVD Import & Export",
-  },
-  description:
-    "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
-};
 
 const MAIL_API_BASE_URL = process.env.NEXT_PUBLIC_MAIL_API_BASE_URL || "https://yourdomain.com/mvd-backend";
 const CONTACT_MAIL_ENDPOINT = `${MAIL_API_BASE_URL}/send-contact-mail.php`;
@@ -234,7 +224,7 @@ export default function ContactPage() {
                   {companyInfo.email}
                 </a>
               </p>
-              <p className="text-xs text-slate-500 mt-1">IEC: {companyInfo.iecNo} | GST: {companyInfo.gstNo}</p>
+
             </div>
           </div>
 

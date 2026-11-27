@@ -83,13 +83,6 @@ export default function AboutUs() {
                     &quot;{companyInfo.motto}&quot;
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-white/20 text-xs text-slate-200 leading-relaxed">
-                    Registered Merchant Exporter
-                    <span className="mx-1 text-[#facc15]">•</span>
-                    IEC: {companyInfo.iecNo}
-                    <span className="mx-1 text-[#facc15]">•</span>
-                    GST: {companyInfo.gstNo}
-                  </div>
                 </div>
               </div>
             </div>

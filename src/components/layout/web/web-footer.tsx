@@ -69,14 +69,6 @@ export default function WebFooter() {
             <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Company Details</h3>
             <ul className="space-y-2.5 text-xs text-slate-200">
               <li className="flex items-start gap-2">
-                <span className="text-[#facc15] font-bold shrink-0">GST No:</span>
-                <span>{companyInfo.gstNo}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#facc15] font-bold shrink-0">IEC No:</span>
-                <span>{companyInfo.iecNo}</span>
-              </li>
-              <li className="flex items-start gap-2">
                 <span className="text-[#facc15] font-bold shrink-0">Address:</span>
                 <span className="leading-relaxed">
                   {companyInfo.address}

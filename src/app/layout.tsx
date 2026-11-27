@@ -3,6 +3,13 @@ import NextTopLoader from "nextjs-toploader";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import "../assets/css/custom.css";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+} from "@/utils/metadata";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,12 +18,21 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "MVD Import & Export",
+    default: DEFAULT_TITLE,
     template: "%s | MVD Import & Export",
   },
-  description:
-    "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
+  description: DEFAULT_DESCRIPTION,
+  openGraph: {
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    type: "website",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function RootLayout({

@@ -35,7 +35,7 @@ const BLOG_POSTS = [
     title: "Ramanathapuram Kundu Milagai: ASTA Color & Pungency Specs",
     excerpt:
       "Why round chillies from Southern Tamil Nadu are prized by spice processors and culinary importers worldwide.",
-    image: "/assets/img/rch2.jpg",
+    image: "/assets/img/round-chilli-1.jpg",
     alt: "Kundu Milagai Export",
     date: "Oct 24, 2026",
     href: "/ramanathapuram-kundu-milagai-blog-details",

@@ -326,7 +326,7 @@ export default function HomePage() {
               <div className="product-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100 h-full flex flex-col">
                 <div className="relative h-52 overflow-hidden bg-slate-100">
                   <img
-                    src="/assets/img/rch2.jpg"
+                    src="/assets/img/round-chilli-1.jpg"
                     alt="Kundu Milagai and Fresh Indian Red Chillies"
                     className="card-img w-full h-full object-cover"
                   />
@@ -449,7 +449,7 @@ export default function HomePage() {
             </article>
 
             <article className="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col reveal">
-              <img src="/assets/img/rch1.jpg" alt="Ramanathapuram Kundu Milagai" className="card-img h-48 w-full object-cover" />
+              <img src="/assets/img/round-chilli-2.jpg" alt="Ramanathapuram Kundu Milagai" className="card-img h-48 w-full object-cover" />
               <div className="p-6 flex flex-col flex-1">
                 <div className="text-xs font-semibold text-slate-400">September 2026 • Spices &amp; Chillies</div>
                 <h3 className="text-lg font-extrabold text-[#0b2c52] mt-2 leading-snug">

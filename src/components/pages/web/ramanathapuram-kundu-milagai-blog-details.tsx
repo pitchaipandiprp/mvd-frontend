@@ -34,7 +34,7 @@ export default function RamanathapuramKunduMilagaiBlogDetails() {
       badge="Spices & Chilli Exports"
       publishedText="Published November 23, 2026 • By MVD Export Quality Team"
       title="Ramanathapuram Kundu Milagai Exports: Premium Indian Round Red Chillies for Global Markets"
-      heroImage="/assets/img/rch2.jpg"
+      heroImage="/assets/img/round-chilli-1.jpg"
       heroAlt="Premium Ramanathapuram Kundu Milagai round red chillies for export"
       tags={["#KunduMilagai", "#RamanathapuramChilli", "#IndianRedChilli", "#SpiceExportsIndia", "#MVDExports"]}
       relatedGuides={RELATED_GUIDES}

@@ -1,20 +1,10 @@
 "use client";
-import type { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, MoveRight, RibbonIcon } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
 import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
 import { companyInfo } from "@/utils/constants";
-
-export const metadata: Metadata = {
-  title: {
-    default: "Get a Quote | MVD Import and Exporter - Bulk Export Inquiry",
-    template: "%s | MVD Import & Export",
-  },
-  description:
-    "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
-};
 
 
 const MAIL_API_BASE_URL = process.env.NEXT_PUBLIC_MAIL_API_BASE_URL || "https://yourdomain.com/mvd-backend";
@@ -502,14 +492,6 @@ export default function GetAQuotePage() {
                     <p className="text-slate-200 text-xs leading-relaxed mt-0.5">
                       {companyInfo.fullAddress}
                     </p>
-                  </div>
-                  <div className="pt-3 border-t border-white/15 text-xs text-slate-300 space-y-1">
-                    <div>
-                      <span className="text-[#facc15] font-bold">IEC Code:</span> {companyInfo.iecNo}
-                    </div>
-                    <div>
-                      <span className="text-[#facc15] font-bold">GSTIN:</span> {companyInfo.gstNo}
-                    </div>
                   </div>
                 </div>
               </div>
