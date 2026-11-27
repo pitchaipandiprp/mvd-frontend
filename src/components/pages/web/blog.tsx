@@ -94,7 +94,7 @@ export default function BlogPage() {
       <section className="py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Filter Bar */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10">
+          {/* <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10">
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => {
                 const isActive = selectedCategory === cat.key;
@@ -114,7 +114,7 @@ export default function BlogPage() {
                 );
               })}
             </div>
-          </div>
+          </div> */}
 
           {/* Featured Article */}
           {showFeatured && (

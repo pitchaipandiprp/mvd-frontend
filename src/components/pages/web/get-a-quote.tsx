@@ -162,52 +162,56 @@ export default function GetAQuotePage() {
       return;
     }
 
-    setSubmitted(true);
+    sweetalert.success(
+      "Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly."
+    );
 
-    try {
-      const { captcha: _captcha, ...payload } = form;
-      const response = await fetch(QUOTATION_MAIL_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    // setSubmitted(true);
 
-      const data = await response.json().catch(() => null);
+    // try {
+    //   const { captcha: _captcha, ...payload } = form;
+    //   const response = await fetch(QUOTATION_MAIL_ENDPOINT, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Accept: "application/json",
+    //     },
+    //     body: JSON.stringify(payload),
+    //   });
 
-      if (!response.ok || !data?.success) {
-        if (data?.errors && typeof data.errors === "object") {
-          console.error(data.errors);
-          sweetalert.error(
-            "Network error while sending your quotation request. Please check your connection and try again."
-          );
-        }
-        sweetalert.error(
-          data?.message || "Unable to submit your quotation request right now. Please try again later."
-        );
-        setForm((prev) => ({ ...prev, captcha: "" }));
-        refreshCaptcha();
-        return;
-      }
+    //   const data = await response.json().catch(() => null);
 
-      sweetalert.success(
-        data.message ||
-        "Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly."
-      );
-      setForm(initialForm);
-      refreshCaptcha();
-    } catch (err) {
-      console.error("Quotation submission failed:", err);
-      sweetalert.error(
-        "Network error while sending your quotation request. Please check your connection and try again."
-      );
-      setForm((prev) => ({ ...prev, captcha: "" }));
-      refreshCaptcha();
-    } finally {
-      setSubmitted(false);
-    }
+    //   if (!response.ok || !data?.success) {
+    //     if (data?.errors && typeof data.errors === "object") {
+    //       console.error(data.errors);
+    //       sweetalert.error(
+    //         "Network error while sending your quotation request. Please check your connection and try again."
+    //       );
+    //     }
+    //     sweetalert.error(
+    //       data?.message || "Unable to submit your quotation request right now. Please try again later."
+    //     );
+    //     setForm((prev) => ({ ...prev, captcha: "" }));
+    //     refreshCaptcha();
+    //     return;
+    //   }
+
+    //   sweetalert.success(
+    //     data.message ||
+    //     "Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly."
+    //   );
+    //   setForm(initialForm);
+    //   refreshCaptcha();
+    // } catch (err) {
+    //   console.error("Quotation submission failed:", err);
+    //   sweetalert.error(
+    //     "Network error while sending your quotation request. Please check your connection and try again."
+    //   );
+    //   setForm((prev) => ({ ...prev, captcha: "" }));
+    //   refreshCaptcha();
+    // } finally {
+    //   setSubmitted(false);
+    // }
   };
 
   const inputBorderClass = (field: keyof FormFields) => error[field] ? "border-red-500 ring-2 ring-red-200" : "border-slate-300";

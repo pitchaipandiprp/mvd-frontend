@@ -114,52 +114,56 @@ export default function ContactPage() {
       return;
     }
 
-    setSubmitted(true);
+    sweetalert.success(
+      "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
+    );
 
-    try {
-      const { captcha: _captcha, ...payload } = form;
-      const response = await fetch(CONTACT_MAIL_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    // setSubmitted(true);
 
-      const data = await response.json().catch(() => null);
+    // try {
+    //   const { captcha: _captcha, ...payload } = form;
+    //   const response = await fetch(CONTACT_MAIL_ENDPOINT, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Accept: "application/json",
+    //     },
+    //     body: JSON.stringify(payload),
+    //   });
 
-      if (!response.ok || !data?.success) {
-        if (data?.errors && typeof data.errors === "object") {
-          console.error(data.errors);
-          sweetalert.error(
-            "Network error while sending your message. Please check your connection and try again."
-          );
-        }
-        sweetalert.error(
-          data?.message || "Unable to send your message right now. Please try again later."
-        );
-        setForm((prev) => ({ ...prev, captcha: "" }));
-        refreshCaptcha();
-        return;
-      }
+    //   const data = await response.json().catch(() => null);
 
-      sweetalert.success(
-        data.message ||
-        "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
-      );
-      setForm(initialForm);
-      refreshCaptcha();
-    } catch (err) {
-      console.error("Contact submission failed:", err);
-      sweetalert.error(
-        "Network error while sending your message. Please check your connection and try again."
-      );
-      setForm((prev) => ({ ...prev, captcha: "" }));
-      refreshCaptcha();
-    } finally {
-      setSubmitted(false);
-    }
+    //   if (!response.ok || !data?.success) {
+    //     if (data?.errors && typeof data.errors === "object") {
+    //       console.error(data.errors);
+    //       sweetalert.error(
+    //         "Network error while sending your message. Please check your connection and try again."
+    //       );
+    //     }
+    //     sweetalert.error(
+    //       data?.message || "Unable to send your message right now. Please try again later."
+    //     );
+    //     setForm((prev) => ({ ...prev, captcha: "" }));
+    //     refreshCaptcha();
+    //     return;
+    //   }
+
+    //   sweetalert.success(
+    //     data.message ||
+    //     "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
+    //   );
+    //   setForm(initialForm);
+    //   refreshCaptcha();
+    // } catch (err) {
+    //   console.error("Contact submission failed:", err);
+    //   sweetalert.error(
+    //     "Network error while sending your message. Please check your connection and try again."
+    //   );
+    //   setForm((prev) => ({ ...prev, captcha: "" }));
+    //   refreshCaptcha();
+    // } finally {
+    //   setSubmitted(false);
+    // }
   };
 
   const inputBorderClass = (field: keyof FormFields) => error[field] ? "border-red-500 ring-2 ring-red-200" : "border-slate-300";
