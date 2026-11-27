@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     "MVD Import & Export - Your trusted partner for quality agricultural products and international export services.",
 };
 
+const MAIL_API_BASE_URL = process.env.NEXT_PUBLIC_MAIL_API_BASE_URL || "https://yourdomain.com/mvd-backend";
+const CONTACT_MAIL_ENDPOINT = `${MAIL_API_BASE_URL}/send-contact-mail.php`;
+
 interface FormFields {
   user_name: string;
   email_id: string;
@@ -113,14 +116,46 @@ export default function ContactPage() {
     setSubmitted(true);
 
     try {
-      // API integration here
+      const { captcha: _captcha, ...payload } = form;
+      const response = await fetch(CONTACT_MAIL_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.success) {
+        if (data?.errors && typeof data.errors === "object") {
+          console.error(data.errors);
+          sweetalert.error(
+            "Network error while sending your message. Please check your connection and try again."
+          );
+        }
+        sweetalert.error(
+          data?.message || "Unable to send your message right now. Please try again later."
+        );
+        setForm((prev) => ({ ...prev, captcha: "" }));
+        refreshCaptcha();
+        return;
+      }
+
       sweetalert.success(
+        data.message ||
         "Thank you! Your message has been sent to MVD Import and Exporter. We will connect with you shortly."
       );
       setForm(initialForm);
       refreshCaptcha();
     } catch (err) {
       console.error("Contact submission failed:", err);
+      sweetalert.error(
+        "Network error while sending your message. Please check your connection and try again."
+      );
+      setForm((prev) => ({ ...prev, captcha: "" }));
+      refreshCaptcha();
     } finally {
       setSubmitted(false);
     }

@@ -16,6 +16,9 @@ export const metadata: Metadata = {
 };
 
 
+const MAIL_API_BASE_URL = process.env.NEXT_PUBLIC_MAIL_API_BASE_URL || "https://yourdomain.com/mvd-backend";
+const QUOTATION_MAIL_ENDPOINT = `${MAIL_API_BASE_URL}/send-quotation-mail.php`;
+
 interface FormFields {
   customer_name: string;
   company_name: string;
@@ -161,12 +164,46 @@ export default function GetAQuotePage() {
     setSubmitted(true);
 
     try {
-      // API integration here
-      sweetalert.success(`Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly`);
+      const { captcha: _captcha, ...payload } = form;
+      const response = await fetch(QUOTATION_MAIL_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.success) {
+        if (data?.errors && typeof data.errors === "object") {
+          console.error(data.errors);
+          sweetalert.error(
+            "Network error while sending your quotation request. Please check your connection and try again."
+          );
+        }
+        sweetalert.error(
+          data?.message || "Unable to submit your quotation request right now. Please try again later."
+        );
+        setForm((prev) => ({ ...prev, captcha: "" }));
+        refreshCaptcha();
+        return;
+      }
+
+      sweetalert.success(
+        data.message ||
+        "Thank you! Your export quotation request has been logged. Our export manager will email you a formal proforma quote shortly."
+      );
       setForm(initialForm);
       refreshCaptcha();
-    } catch (error) {
-      console.error("Quotation submission failed:", error);
+    } catch (err) {
+      console.error("Quotation submission failed:", err);
+      sweetalert.error(
+        "Network error while sending your quotation request. Please check your connection and try again."
+      );
+      setForm((prev) => ({ ...prev, captcha: "" }));
+      refreshCaptcha();
     } finally {
       setSubmitted(false);
     }
