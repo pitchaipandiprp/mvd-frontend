@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { companyInfo } from "@/utils/constants";
 
 const BLOG_ROUTES = [
   "/blog",
@@ -71,32 +72,32 @@ export default function WebHeader() {
                   clipRule="evenodd"
                 />
               </svg>
-              Thiruppuvanam, Madurai - 630611, Tamil Nadu, India
+              {companyInfo.shortAddress}
             </span>
             <a
-              href="mailto:mvdimportexport@gmail.com"
+              href={companyInfo.emailHref}
               className="hidden sm:flex items-center gap-1.5 text-slate-200 hover:text-[#facc15] transition"
             >
               <svg className="w-3.5 h-3.5 text-[#facc15] shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
               </svg>
-              mvdimportexport@gmail.com
+              {companyInfo.email}
             </a>
             <a
-              href="tel:+919043764490"
+              href={companyInfo.phoneHref}
               className="flex items-center gap-1.5 text-slate-200 hover:text-[#facc15] transition"
             >
               <svg className="w-3.5 h-3.5 text-[#22c55e] shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
               </svg>
-              +91 90437 64490
+              {companyInfo.phone}
             </a>
           </div>
           <div className="hidden md:flex items-center gap-2 font-medium tracking-wide text-slate-200">
-            <span>Global Trade</span>
+            <span>{companyInfo.headerSloganLeft}</span>
             <span className="text-[#facc15]">|</span>
-            <span className="text-[#facc15]">Better Tomorrow</span>
+            <span className="text-[#facc15]">{companyInfo.headerSloganRight}</span>
           </div>
         </div>
       </div>
@@ -110,17 +111,17 @@ export default function WebHeader() {
               <div className="h-[75px] w-[75px] flex items-center justify-center overflow-hidden rounded-full bg-white">
                 <img
                   src="/assets/img/logo.png"
-                  alt="MVD Import and Exporter Logo"
+                  alt={`${companyInfo.name} Logo`}
                   className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="border-l-2 border-[#d4a32a] pl-3">
-                <div className="text-2xl font-extrabold tracking-tight text-[#0b2c52] leading-none">MVD</div>
+                <div className="text-2xl font-extrabold tracking-tight text-[#0b2c52] leading-none">{companyInfo.shortName}</div>
                 <div className="text-[11px] font-bold tracking-wider text-[#0b2c52] uppercase mt-0.5">
-                  IMPORT AND EXPORTER
+                  {companyInfo.subtitle}
                 </div>
                 <div className="text-[9.5px] italic text-slate-500 leading-tight">
-                  Connecting Continents • Delivering Opportunities
+                  {companyInfo.tagline}
                 </div>
               </div>
             </Link>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { companyInfo } from "@/utils/constants";
 
 const QUALITY_STANDARDS = [
   {
@@ -79,15 +80,15 @@ export default function AboutUs() {
                   </span>
 
                   <div className="font-script text-2xl sm:text-3xl text-[#facc15]">
-                    &quot;Small Steps Today | Big Opportunities Tomorrow&quot;
+                    &quot;{companyInfo.motto}&quot;
                   </div>
 
                   <div className="mt-3 pt-3 border-t border-white/20 text-xs text-slate-200 leading-relaxed">
                     Registered Merchant Exporter
                     <span className="mx-1 text-[#facc15]">•</span>
-                    IEC: EFDPM4929G
+                    IEC: {companyInfo.iecNo}
                     <span className="mx-1 text-[#facc15]">•</span>
-                    GST: 33EFDPM4929G2ZE
+                    GST: {companyInfo.gstNo}
                   </div>
                 </div>
               </div>
@@ -166,7 +167,7 @@ export default function AboutUs() {
 
                   {/* PDF Button */}
                   <a
-                    href="/assets/pdf/fieo-certificate.pdf"
+                    href={companyInfo.fieoCertificateUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between gap-3 w-full rounded-xl bg-[#f4f7fa] hover:bg-[#e8f4ec] border border-slate-200 hover:border-green-300 p-4 transition-all duration-300 group"

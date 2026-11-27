@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
 import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
+import { companyInfo } from "@/utils/constants";
 
 export const metadata: Metadata = {
   title: {
@@ -194,7 +195,7 @@ export default function ContactPage() {
               </div>
               <h2 className="text-base font-extrabold text-[#0b2c52]">Head Office &amp; Packhouse</h2>
               <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-                2 Bar / 467, Madurai Mandapam Main Road, Siva Siva Nagar, Thiruppuvanam - 630611, Tamil Nadu, India
+                {companyInfo.fullAddress}
               </p>
             </div>
 
@@ -206,11 +207,11 @@ export default function ContactPage() {
               </div>
               <h2 className="text-base font-extrabold text-[#0b2c52]">Call / WhatsApp Trade Desk</h2>
               <p className="text-sm text-slate-600 mt-2">
-                <a href="tel:+919043764490" className="font-bold text-[#0b2c52] hover:text-amber-600 text-base">
-                  +91 90437 64490
+                <a href={companyInfo.phoneHref} className="font-bold text-[#0b2c52] hover:text-amber-600 text-base">
+                  {companyInfo.phone}
                 </a>
               </p>
-              <p className="text-xs text-slate-500 mt-1">Mon – Sat: 9:00 AM – 7:00 PM IST</p>
+              <p className="text-xs text-slate-500 mt-1">{companyInfo.businessHours}</p>
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 reveal">
@@ -223,13 +224,13 @@ export default function ContactPage() {
               <h2 className="text-base font-extrabold text-[#0b2c52]">Email &amp; Trade Registration</h2>
               <p className="text-sm mt-2">
                 <a
-                  href="mailto:mvdimportexport@gmail.com"
+                  href={companyInfo.emailHref}
                   className="font-bold text-[#0b2c52] hover:text-amber-600 break-all"
                 >
-                  mvdimportexport@gmail.com
+                  {companyInfo.email}
                 </a>
               </p>
-              <p className="text-xs text-slate-500 mt-1">IEC: EFDPM4929G | GST: 33EFDPM4929G2ZE</p>
+              <p className="text-xs text-slate-500 mt-1">IEC: {companyInfo.iecNo} | GST: {companyInfo.gstNo}</p>
             </div>
           </div>
 
@@ -379,11 +380,11 @@ export default function ContactPage() {
             <div className="lg:col-span-6 bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100 flex flex-col reveal-right">
               <div className="p-5 bg-[#0b2c52] text-white flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-base">Our Location — Thiruppuvanam, Madurai</h3>
-                  <p className="text-xs text-slate-300">Madurai Mandapam Main Road, Tamil Nadu 630611</p>
+                  <h3 className="font-bold text-base">{companyInfo.mapTitle}</h3>
+                  <p className="text-xs text-slate-300">{companyInfo.mapSubtitle}</p>
                 </div>
                 <a
-                  href="https://maps.google.com/?q=Thiruppuvanam,+Madurai,+Tamil+Nadu+630611"
+                  href={companyInfo.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs font-bold text-[#facc15] hover:underline"
@@ -393,8 +394,8 @@ export default function ContactPage() {
               </div>
               <div className="flex-1 min-h-[340px]">
                 <iframe
-                  title="MVD Import and Exporter Location Map"
-                  src="https://www.google.com/maps?q=Thiruppuvanam,+Madurai,+Tamil+Nadu+630611&output=embed"
+                  title={`${companyInfo.name} Location Map`}
+                  src={companyInfo.mapEmbedUrl}
                   className="w-full h-full min-h-[340px] border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

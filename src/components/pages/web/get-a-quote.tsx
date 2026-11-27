@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowRight, MoveRight, RibbonIcon } from "lucide-react";
 import { sweetalert } from "@/utils/sweetalert";
 import { TextCaptcha, useTextCaptcha } from "@/components/common/captcha/text-captcha";
+import { companyInfo } from "@/utils/constants";
 
 export const metadata: Metadata = {
   title: {
@@ -479,31 +480,31 @@ export default function GetAQuotePage() {
                 <div className="mt-6 space-y-4 text-sm">
                   <div>
                     <div className="text-xs text-slate-400 uppercase font-bold">Phone &amp; WhatsApp</div>
-                    <a href="tel:+919043764490" className="font-bold text-white hover:text-[#facc15] text-base">
-                      +91 90437 64490
+                    <a href={companyInfo.phoneHref} className="font-bold text-white hover:text-[#facc15] text-base">
+                      {companyInfo.phone}
                     </a>
                   </div>
                   <div>
                     <div className="text-xs text-slate-400 uppercase font-bold">Export Inquiries Email</div>
                     <a
-                      href="mailto:mvdimportexport@gmail.com"
+                      href={companyInfo.emailHref}
                       className="font-bold text-white hover:text-[#facc15] break-all"
                     >
-                      mvdimportexport@gmail.com
+                      {companyInfo.email}
                     </a>
                   </div>
                   <div>
                     <div className="text-xs text-slate-400 uppercase font-bold">Registered Office</div>
                     <p className="text-slate-200 text-xs leading-relaxed mt-0.5">
-                      2 Bar / 467, Madurai Mandapam Main Road, Siva Siva Nagar, Thiruppuvanam - 630611, Tamil Nadu, India
+                      {companyInfo.fullAddress}
                     </p>
                   </div>
                   <div className="pt-3 border-t border-white/15 text-xs text-slate-300 space-y-1">
                     <div>
-                      <span className="text-[#facc15] font-bold">IEC Code:</span> EFDPM4929G
+                      <span className="text-[#facc15] font-bold">IEC Code:</span> {companyInfo.iecNo}
                     </div>
                     <div>
-                      <span className="text-[#facc15] font-bold">GSTIN:</span> 33EFDPM4929G2ZE
+                      <span className="text-[#facc15] font-bold">GSTIN:</span> {companyInfo.gstNo}
                     </div>
                   </div>
                 </div>

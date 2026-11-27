@@ -7,6 +7,40 @@ export const prefixUrl = {
     panel: "/panel",
 }
 
+export const companyInfo = {
+    name: "MVD Import and Exporter",
+    shortName: "MVD",
+    subtitle: "IMPORT AND EXPORTER",
+    tagline: "Connecting Continents • Delivering Opportunities",
+    motto: "Small Steps Today | Big Opportunities Tomorrow",
+    headerSloganLeft: "Global Trade",
+    headerSloganRight: "Better Tomorrow",
+    description:
+        "Trusted Indian exporter of fresh coconuts, semi-husked coconuts, Kundu Milagai, and farm-fresh vegetables to international buyers.",
+    email: "mvdimportexport@gmail.com",
+    emailHref: "mailto:mvdimportexport@gmail.com",
+    phone: "+91 90437 64490",
+    mobile: "+91 90437 64490",
+    phoneHref: "tel:+919043764490",
+    businessHours: "Mon – Sat: 9:00 AM – 7:00 PM IST",
+    gstNo: "33EFDPM4929G2ZE",
+    iecNo: "EFDPM4929G",
+    address: "2 Bar / 467, Madurai Mandapam Main Road, Siva Siva Nagar, Thiruppuvanam - 630611",
+    fullAddress: "2 Bar / 467, Madurai Mandapam Main Road, Siva Siva Nagar, Thiruppuvanam - 630611, Tamil Nadu, India",
+    shortAddress: "Thiruppuvanam, Madurai - 630611, Tamil Nadu, India",
+    mapTitle: "Our Location — Thiruppuvanam, Madurai",
+    mapSubtitle: "Madurai Mandapam Main Road, Tamil Nadu 630611",
+    mapUrl: "https://maps.google.com/?q=Thiruppuvanam,+Madurai,+Tamil+Nadu+630611",
+    mapEmbedUrl: "https://www.google.com/maps?q=Thiruppuvanam,+Madurai,+Tamil+Nadu+630611&output=embed",
+    copyrightYears: "2025-2026",
+    fieoCertificateUrl: "/assets/pdf/fieo-certificate.pdf",
+    social: {
+        linkedin: "#linkedin",
+        facebook: "#facebook",
+        instagram: "#instagram",
+    },
+};
+
 const inputClass = 'w-full rounded-lg border border-border bg-white px-4 py-2 text-sm text-text placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-slate-300 outline-none transition-all duration-300 hover:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed';
 
 const inputCls = 'w-full rounded-lg bg-transparent px-4 py-2 text-sm text-slate-600 placeholder:text-slate-400  outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed';
@@ -38,6 +72,7 @@ const badgeClassPurple = 'cursor-pointer inline-flex rounded-lg px-3 py-2 text-x
 export const constants = {
     APP_NAME,
     prefixUrl,
+    companyInfo,
     inputClass,
     inputCls,
     inputClassSearch,

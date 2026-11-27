@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { companyInfo } from "@/utils/constants";
 
 export default function WebFooter() {
   return (
@@ -18,21 +19,20 @@ export default function WebFooter() {
                 <path d="M51 33L58 35L54 41" fill="#FACC15" />
               </svg>
               <div>
-                <div className="text-2xl font-extrabold tracking-tight text-white leading-none">MVD</div>
+                <div className="text-2xl font-extrabold tracking-tight text-white leading-none">{companyInfo.shortName}</div>
                 <div className="text-[11px] font-bold tracking-wider text-slate-200 uppercase mt-0.5">
-                  IMPORT AND EXPORTER
+                  {companyInfo.subtitle}
                 </div>
               </div>
             </Link>
-            <p className="text-xs text-slate-300 mt-3 italic">Connecting Continents • Delivering Opportunities</p>
+            <p className="text-xs text-slate-300 mt-3 italic">{companyInfo.tagline}</p>
             <p className="text-xs text-slate-300/90 mt-3 leading-relaxed">
-              Trusted Indian exporter of fresh coconuts, semi-husked coconuts, Kundu Milagai, and farm-fresh vegetables
-              to international buyers.
+              {companyInfo.description}
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-2.5 mt-5">
               <a
-                href="#linkedin"
+                href={companyInfo.social.linkedin}
                 aria-label="LinkedIn"
                 onClick={(e) => e.preventDefault()}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#facc15] hover:text-[#071e38] flex items-center justify-center transition"
@@ -42,7 +42,7 @@ export default function WebFooter() {
                 </svg>
               </a>
               <a
-                href="#facebook"
+                href={companyInfo.social.facebook}
                 aria-label="Facebook"
                 onClick={(e) => e.preventDefault()}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#facc15] hover:text-[#071e38] flex items-center justify-center transition"
@@ -52,7 +52,7 @@ export default function WebFooter() {
                 </svg>
               </a>
               <a
-                href="#instagram"
+                href={companyInfo.social.instagram}
                 aria-label="Instagram"
                 onClick={(e) => e.preventDefault()}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#facc15] hover:text-[#071e38] flex items-center justify-center transition"
@@ -70,16 +70,16 @@ export default function WebFooter() {
             <ul className="space-y-2.5 text-xs text-slate-200">
               <li className="flex items-start gap-2">
                 <span className="text-[#facc15] font-bold shrink-0">GST No:</span>
-                <span>33EFDPM4929G2ZE</span>
+                <span>{companyInfo.gstNo}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#facc15] font-bold shrink-0">IEC No:</span>
-                <span>EFDPM4929G</span>
+                <span>{companyInfo.iecNo}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#facc15] font-bold shrink-0">Address:</span>
                 <span className="leading-relaxed">
-                  2 Bar / 467, Madurai Mandapam Main Road, Siva Siva Nagar, Thiruppuvanam - 630611
+                  {companyInfo.address}
                 </span>
               </li>
             </ul>
@@ -128,19 +128,19 @@ export default function WebFooter() {
             <ul className="space-y-3 text-xs text-slate-200">
               <li className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#22c55e] shrink-0"></span>
-                <a href="tel:+919043764490" className="hover:text-[#facc15] transition">
-                  +91 90437 64490
+                <a href={companyInfo.phoneHref} className="hover:text-[#facc15] transition">
+                  {companyInfo.phone}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#facc15] mt-1 shrink-0"></span>
-                <a href="mailto:mvdimportexport@gmail.com" className="hover:text-[#facc15] transition break-all">
-                  mvdimportexport@gmail.com
+                <a href={companyInfo.emailHref} className="hover:text-[#facc15] transition break-all">
+                  {companyInfo.email}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-2 h-2 rounded-full bg-sky-400 mt-1 shrink-0"></span>
-                <span>Thiruppuvanam, Madurai - 630611, Tamil Nadu, India</span>
+                <span>{companyInfo.shortAddress}</span>
               </li>
             </ul>
           </div>
@@ -150,9 +150,9 @@ export default function WebFooter() {
       {/* Bottom Copyright Bar */}
       <div className="bg-[#071e38] border-t border-white/10 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-300">
-          <p>© 2025-2026 MVD Import and Exporter. All Rights Reserved.</p>
+          <p>© {companyInfo.copyrightYears} {companyInfo.name}. All Rights Reserved.</p>
           <p className="text-slate-300">
-            Small Steps Today <span className="text-[#facc15] mx-1">|</span> Big Opportunities Tomorrow
+            {companyInfo.motto.split("|")[0].trim()} <span className="text-[#facc15] mx-1">|</span> {companyInfo.motto.split("|")[1]?.trim()}
           </p>
         </div>
       </div>
